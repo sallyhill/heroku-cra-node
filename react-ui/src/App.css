@@ -31,9 +31,12 @@
   margin: 0 auto;
 }
 
-.App-scanner video {
-  display: block;
+.scanner-preview video,
+.scanner-preview canvas {
+  position: absolute;
   margin: 0 auto;
+  left: 0;
+  right: 0;
 }
 
 @keyframes App-logo-spin {

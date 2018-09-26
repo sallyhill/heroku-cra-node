@@ -34,12 +34,18 @@ class App extends Component {
       })
   }
 
+  onIsbnInputChange = ({target: { value }}) => console.log(value);
+
+  toggleIsbnInput = () => {
+    this.setState(({ showIsbnInput }) => ({ showIsbnInput: !showIsbnInput }));
+  }
+
   toggleShowScanner = () => {
     this.setState(({ showScanner }) => ({ showScanner: !showScanner }));
   }
 
   render() {
-    const { showScanner } = this.state;
+    const { showScanner, showIsbnInput } = this.state;
     return (
       <div className="App">
         <div className="App-header">
@@ -58,12 +64,16 @@ class App extends Component {
             : this.state.message
           }
         </p>
-        <p className='App-scanner'>
+        <div className='App-scanner'>
           <button onClick={this.toggleShowScanner}>
             { showScanner ? 'Stop Scanning' : 'Scan for ISBN from barcode' }
           </button>
-          {this.state.showScanner && <Scanner />}
-        </p>
+          <button onClick={this.toggleIsbnInput}>
+            Add ISBN code manually
+          </button>
+          {showScanner && <Scanner />}
+          {showIsbnInput && <input onChange={this.onIsbnInputChange} />}
+        </div>
       </div>
     );
   }
