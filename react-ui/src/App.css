@@ -22,6 +22,20 @@
   color: #f60;
 }
 
+.App-scanner {
+  width: 100%;
+}
+
+.App-scanner button {
+  display: block;
+  margin: 0 auto;
+}
+
+.App-scanner video {
+  display: block;
+  margin: 0 auto;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

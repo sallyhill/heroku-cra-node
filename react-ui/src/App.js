@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Scanner from './components/Scanner';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       message: null,
-      fetching: true
+      fetching: true,
+      showScanner: false,
     };
   }
 
@@ -32,7 +34,12 @@ class App extends Component {
       })
   }
 
+  toggleShowScanner = () => {
+    this.setState(({ showScanner }) => ({ showScanner: !showScanner }));
+  }
+
   render() {
+    const { showScanner } = this.state;
     return (
       <div className="App">
         <div className="App-header">
@@ -48,7 +55,14 @@ class App extends Component {
         <p className="App-intro">
           {this.state.fetching
             ? 'Fetching message from API'
-            : this.state.message}
+            : this.state.message
+          }
+        </p>
+        <p className='App-scanner'>
+          <button onClick={this.toggleShowScanner}>
+            { showScanner ? 'Stop Scanning' : 'Scan for ISBN from barcode' }
+          </button>
+          {this.state.showScanner && <Scanner />}
         </p>
       </div>
     );
