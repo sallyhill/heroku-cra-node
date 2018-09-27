@@ -24,16 +24,20 @@ const initialConfig = {
   numOfWorkers: 8,
   frequency: 10,
   decoder: {
-    readers : [{
-        format: "ean_reader",
-        config: {}
-    }]
+    readers : [
+      "code_128_reader",
+      "ean_reader",
+      "ean_8_reader"
+    ],
   },
   locate: true
 };
 
 export default class Scanner extends Component {
-  state = {}
+  state = {
+    resultTexts: [],
+  }
+
   componentDidMount() {
     if (canGetUserMedia) {
       Quagga.init(initialConfig, (err) => {
@@ -52,37 +56,56 @@ export default class Scanner extends Component {
   componentWillUnmount() {
     Quagga.stop();
     Quagga.offDetected(this.handleDetection);
+    Quagga.offProcessed(this.handleProcessed);
   }
 
   handleProcessed = (result) => {
-    _.get(result, 'codeResult.code') && console.log(_.get(result, 'codeResult.code'));
-    var drawingCtx = Quagga.canvas.ctx.overlay,
-        drawingCanvas = Quagga.canvas.dom.overlay;
+    const drawingCtx = Quagga.canvas.ctx.overlay;
+    const drawingCanvas = Quagga.canvas.dom.overlay;
 
-    if (result) {
-      if (result.boxes) {
-        drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
-        result.boxes.filter(function (box) {
-            return box !== result.box;
-        }).forEach(function (box) {
-            Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+
+    if (_.get(result, 'boxes')) {
+      drawingCtx.clearRect(
+        0,
+        0,
+        parseInt(drawingCanvas.getAttribute("width")),
+        parseInt(drawingCanvas.getAttribute("height"))
+      );
+      result.boxes.filter(box =>  box !== result.box)
+        .forEach((box) => {
+          Quagga.ImageDebug.drawPath(
+            box,
+            {x: 0, y: 1},
+            drawingCtx,
+            {color: "green", lineWidth: 2}
+          );
         });
-      }
+    }
 
-      if (result.box) {
-        Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
-      }
+    if (_.get(result, 'box')) {
+      Quagga.ImageDebug.drawPath(
+        result.box,
+        {x: 0, y: 1},
+        drawingCtx,
+        {color: "#00F", lineWidth: 2}
+      );
+    }
 
-      if (result.codeResult && result.codeResult.code) {
-        Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
-      }
-    }   
+    if (_.get(result, 'codeResult.code')) {
+      Quagga.ImageDebug.drawPath(
+        result.line,
+        {x: 'x', y: 'y'},
+        drawingCtx,
+        {color: 'red', lineWidth: 3}
+      );
+    }
   }
 
-  handleDetection = ({ codeResult: { code }}) => {
-    this.setState({
-      resultText: code,
-    });
+  handleDetection = (result) => {
+    const code = _.get(result, 'codeResult.code');
+    code && this.setState(({resultTexts}) => ({
+      resultTexts: [...resultTexts, code]
+    }));
   }
 
   render() {
@@ -93,10 +116,12 @@ export default class Scanner extends Component {
       </p>
     );
 
-    const { resultText } = this.state;
+    const { resultTexts } = this.state;
     return (
       <div>
-        <code>{ resultText }</code>
+        { resultTexts.map(resultText => (
+          <code style={{...isIsbn(resultText) && { backgroundColor: 'red' } }}>{ resultText }, </code>)
+        )}
         <div id='scanner-preview' className='scanner-preview' />
       </div>
     );

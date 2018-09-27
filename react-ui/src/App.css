@@ -8,14 +8,15 @@
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
+  background-color: lightcoral;
   padding: 20px;
   color: white;
+  margin-bottom: 20px;
 }
 
 .App-intro {
   font-size: large;
+  display: none;
 }
 
 .App a {
@@ -26,9 +27,19 @@
   width: 100%;
 }
 
+.App-scanner .buttons {
+  padding-bottom: 15px;
+}
+
 .App-scanner button {
-  display: block;
-  margin: 0 auto;
+  padding: 7px 10px;
+  margin: 0 5px;
+  border: none;
+  background-color: blue;
+  color: white;
+  font-weight: 500;
+  border-radius: 2px;
+  font-size: .8em;
 }
 
 .scanner-preview video,

@@ -49,8 +49,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <h2>Book Tagger</h2>
         </div>
         <p className="App-intro">
           {'This is '}
@@ -65,14 +64,18 @@ class App extends Component {
           }
         </p>
         <div className='App-scanner'>
-          <button onClick={this.toggleShowScanner}>
-            { showScanner ? 'Stop Scanning' : 'Scan for ISBN from barcode' }
-          </button>
-          <button onClick={this.toggleIsbnInput}>
-            Add ISBN code manually
-          </button>
-          {showScanner && <Scanner />}
-          {showIsbnInput && <input onChange={this.onIsbnInputChange} />}
+          <div className='buttons'>
+            <button onClick={this.toggleShowScanner}>
+              <span>{ showScanner ? 'Stop Scanning' : 'Scan for ISBN from barcode' }</span>
+            </button>
+            <button onClick={this.toggleIsbnInput}>
+              <span>Add ISBN code manually</span>
+            </button>
+          </div>
+          <div>
+            {showScanner && <Scanner />}
+            {showIsbnInput && <input onChange={this.onIsbnInputChange} />}
+          </div>
         </div>
       </div>
     );
